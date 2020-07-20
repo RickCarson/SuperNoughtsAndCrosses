@@ -1,6 +1,6 @@
 import React from 'react';
 import Square from './Sqaure';
-import { calculateWinner } from './BoardServices';
+import { calculateWinner, range } from './BoardServices';
 
 class Board extends React.Component {
 
@@ -22,19 +22,27 @@ class Board extends React.Component {
     var grid = [];
     var row = [];
 
-    for (var i = 0; i < gridSize; i++) {
+    console.log('range(1, gridSize)', range(1, gridSize));
+   
+    return range(1, gridSize).map(x => 
+      <div className="board-row" key={x}>
+        { range(1, gridSize).map(y =>this.renderSquare((x*gridSize) + y)) }
+      </div>
+      )
 
-      for (var j = 0; j < gridSize; j++) {
-        row.push(this.renderSquare((i*gridSize) + j))
-      }
-
-      grid.push(<div className="board-row" key={i}>{row}</div>);
-      row = [];
-  
-    }
-
-    return grid;
-
+//    for (var i = 0; i < gridSize; i++) {
+//
+//      for (var j = 0; j < gridSize; j++) {
+//        row.push(this.renderSquare((i*gridSize) + j))
+//      }
+//
+//      grid.push(<div className="board-row" key={i}>{row}</div>);
+//      row = [];
+//  
+//    }
+//
+//    return grid;
+//
   }
 
 
