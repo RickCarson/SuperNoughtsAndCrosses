@@ -1,82 +1,97 @@
-import React from 'react';
+import React, { useState }  from 'react';
 import GameSettingsForm from './board/GameSettingsForm';
 import Board from './board/Board';
 import { calculateWinner } from './board/BoardServices';
 
-class Game extends React.Component {
 
-  state = {
-    gridSize: 3,
-    toWin: 3,
-    playerNames: ['X', 'O'],
-    squares: Array(3*3).fill(null),  
-    nextPlayer: 0,
-  }   
+const useGameState = () => {
+  const defaultSize = 3;
+  const [gridSize, setGridSize] = useState(defaultSize);
+  const [toWin, settoWin] = useState(defaultSize);
+  const [playerNames, setplayerNames] = useState(['X', 'O']);
+  const [squares, setsquares] = useState(Array(defaultSize*defaultSize).fill(null));
+  const [nextPlayer, setnextPlayer] = useState(0);
 
-
-  resetGrid = (gridSize, toWin) => {
-    this.setState({
-      gridSize: gridSize, 
-      toWin: toWin,
-      squares: Array(this.state.gridSize*this.state.gridSize).fill(null),
-    });
-    
+  const setGrid = (newGridSize, newToWin) => {
+    setGridSize(newGridSize);
+    settoWin(newToWin);
+    setsquares(Array(newGridSize*newGridSize).fill(null))
+  }
+  
+  const setPlayersDefault = () => {
+    setplayerNames(['X', 'O']);
   }
 
-  addPlayer = (playerName) => {
-    console.log('addPlayer', playerName)
-    this.setState(prevState => ({
-      playerNames: [...prevState.playerNames, playerName.newPlayer.toUpperCase()],
-    }));
-  }
+  const setAddPlayer = (playerName) => {
+    setplayerNames([...playerNames, playerName.newPlayer.toUpperCase()]);
+  }  
 
-  resetPlayers = () => {
-    this.setState({ playerNames: ['X', 'O'] })
-  }
-
-  setSquare = (i) => {
-    const { playerNames, squares, nextPlayer, gridSize, toWin } = this.state;
-
+  const setSquare = (i) => {
     if (squares[i] || calculateWinner(squares, gridSize, toWin)) {
       return;
     }
-      squares[i] = playerNames[nextPlayer];
-      this.setState({
-        squares : squares,
-        nextPlayer: nextPlayer >= playerNames.length -1 ? 0 : nextPlayer + 1,
-      });
-  }  
 
-  render() {
-    return (
-      <div className="game">
-        <div>
-          <GameSettingsForm 
-            gridSize={this.gridSize} 
-            toWin={this.toWin} 
-            playerNames={this.state.playerNames} 
-            resetGrid={this.resetGrid} 
-            addPlayer={this.addPlayer}
-            resetPlayers={this.resetPlayers}
-          />
-        </div>
-        <div className="game-board">
-          <Board 
-            gridSize={this.state.gridSize} 
-            toWin={this.state.toWin} 
-            playerNames={this.state.playerNames} 
-            squares={this.state.squares}
-            handleClick={this.setSquare}
-            nextPlayer={this.state.nextPlayer}
-          />
-        </div>
-        <div className="game-info">
-          <div>{/* status */}</div>
-          <ol>{/* TODO */}</ol>
-        </div>
-      </div>
-    )
+    const newSquares = squares;
+    newSquares[i]  = playerNames[nextPlayer];
+    setsquares(newSquares);
+    setnextPlayer(nextPlayer >= playerNames.length -1 ? 0 : nextPlayer + 1);
+  }    
+
+  return {     
+    gridSize,
+    toWin,
+    playerNames,
+    squares,
+    nextPlayer,
+    setGrid,
+    setPlayersDefault,
+    setAddPlayer,
+    setSquare,
   }
+
+};
+
+const Game = (props) => {
+  const {
+    gridSize,
+    toWin,
+    playerNames,
+    squares,
+    nextPlayer,
+    setGrid,
+    setPlayersDefault,
+    setAddPlayer,
+    setSquare,
+  } = useGameState();
+
+  return (
+    <div className="game">
+      <div>
+        <GameSettingsForm 
+          gridSize={gridSize} 
+          toWin={toWin} 
+          playerNames={playerNames} 
+          resetGrid={setGrid} 
+          addPlayer={setAddPlayer}
+          resetPlayers={setPlayersDefault}
+        />
+      </div>
+      <div className="game-board">
+        <Board 
+          gridSize={gridSize} 
+          toWin={toWin} 
+          playerNames={playerNames} 
+          squares={squares}
+          handleClick={setSquare}
+          nextPlayer={nextPlayer}
+        />
+      </div>
+      <div className="game-info">
+        <div>{/* status */}</div>
+        <ol>{/* TODO */}</ol>
+      </div>
+    </div>
+  )
 }
 
 export default(Game)
