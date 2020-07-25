@@ -1,6 +1,6 @@
 import React from 'react';
 import Square from './Sqaure';
-import { calculateWinner, range } from './BoardServices';
+import GameService from './BoardServices';
 
 class Board extends React.Component {
 
@@ -18,31 +18,11 @@ class Board extends React.Component {
   }
 
   renderGrid(gridSize) {
-
-    var grid = [];
-    var row = [];
-
-    console.log('range(1, gridSize)', range(1, gridSize));
-   
-    return range(1, gridSize).map(x => 
+    return GameService.range(1, gridSize).map(x => 
       <div className="board-row" key={x}>
-        { range(1, gridSize).map(y =>this.renderSquare((x*gridSize) + y)) }
+        { GameService.range(1, gridSize).map(y =>this.renderSquare((x*gridSize) + y)) }
       </div>
       )
-
-//    for (var i = 0; i < gridSize; i++) {
-//
-//      for (var j = 0; j < gridSize; j++) {
-//        row.push(this.renderSquare((i*gridSize) + j))
-//      }
-//
-//      grid.push(<div className="board-row" key={i}>{row}</div>);
-//      row = [];
-//  
-//    }
-//
-//    return grid;
-//
   }
 
 
@@ -51,7 +31,7 @@ class Board extends React.Component {
 
     let status;
     
-    const winner = calculateWinner(squares, gridSize, toWin);
+    const winner = GameService.calculateWinner(squares, gridSize, toWin);
 
     if (winner) {
       status = 'Winner: ' + winner;

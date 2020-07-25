@@ -1,5 +1,6 @@
 
-export function calculateWinner(squares, gridSize, toWin) {
+const GameService = {
+  calculateWinner: (squares, gridSize, toWin) => {
 
   if (!squares)
     return null; 
@@ -38,8 +39,12 @@ export function calculateWinner(squares, gridSize, toWin) {
     }
   }
   return null;
-}  
+},
 
-export function range(min, max) {
+range: (min, max) => {
   return Array.from({ length: max - min + 1}, (_, i) => min + i)
 }
+
+}
+
+export default GameService 
